@@ -1,0 +1,17 @@
+#IntelliJ stuff
+.idea/
+*.iml
+
+# Java/Maven stuff
+**/target/
+backend/target/
+
+# Node/React stuff
+**/node_modules/
+frontend/node_modules/
+frontend/build/
+.env
+
+# misc stuff
+Thumbs.db
+.DS_Store 
