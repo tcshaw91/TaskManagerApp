@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${app.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
 
     private final JwtFilter jwtFilter;
 
@@ -52,17 +55,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        // Explicitly allow both local and production URLs
+        config.setAllowedOrigins(List.of("http://localhost:5173", frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        CorsConfiguration config2 = new CorsConfiguration();
-        config2.setAllowedOrigins(List.of("*"));
-        config2.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config2.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true); // Needed if you ever use cookies/sessions
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/auth/**", config2);
-        source.registerCorsConfiguration("/tasks/**", config);
-        source.registerCorsConfiguration("/categories/**", config);
+        // Apply the same trusted config to all endpoints
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }

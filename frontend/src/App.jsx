@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API = "http://localhost:8080";
+// Use the environment variable if it exists, otherwise fallback to localhost
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
 const PAGE_SIZE = 5;
 
 
